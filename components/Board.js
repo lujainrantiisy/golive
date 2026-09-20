@@ -47,12 +47,32 @@ export default function Board({ session }) {
     e.preventDefault();
     if (!name.trim()) return;
     setError('');
-    const { error } = await supabase
+
+    // 1. جلب بيانات المستخدم الحالية مباشرة من Supabase لضمان وجود الـ ID
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      setError('يرجى تسجيل الدخول مجدداً.');
+      return;
+    }
+
+    // 2. إدخال الـ Lead باستخدام ID المستخدم الحالي المؤكد
+    const { error: insertError } = await supabase
       .from('leads2')
-      .insert({ name, channel, status, user_id: session.user.id });
-    if (error) { setError(error.message); return; }
+      .insert({ 
+        name, 
+        channel, 
+        status, 
+        user_id: user.id // <-- استخدام الـ ID الحي والمضمون للمستخدم
+      });
+
+    if (insertError) { 
+      setError(insertError.message); 
+      return; 
+    }
+
+    // إعادة تفريغ الحقل بعد النجاح
     setName('');
-    // No manual reload needed — the realtime subscription updates the list.
   }
 
   async function signOut() {
