@@ -83,7 +83,7 @@ export default function Board({ session }) {
     <main className="wrap">
       <div className="topline">
         <div>
-          <h1>📋 Leads Board <span className={'live ' + (live ? '' : 'off')}>{live ? '● LIVE' : '○ offline'}</span></h1>
+          <h1>📋 Leads Boardd <span className={'live ' + (live ? '' : 'off')}>{live ? '● LIVE' : '○ offline'}</span></h1>
           <div className="who">Signed in as {session.user.email}</div>
         </div>
         <button className="ghost" onClick={signOut}>Sign out</button>
